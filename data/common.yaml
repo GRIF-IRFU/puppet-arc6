@@ -49,7 +49,7 @@ arc6::default_RTEs:
     is_default: true
     params:
       COPY_CACERT_DIR:
-        #beware : hiera interprets no/No as boolean
+        #beware : hiera interprets no/No as boolean, so quote this text
         value: 'No'
   # for atlas support
   APPS/HEP/ATLAS-SITE-LCG:

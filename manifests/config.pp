@@ -72,7 +72,8 @@ class arc6::config(
     include ::arc6::apel
   }
 
-
+  #TODO ?
+  #
   # Added to use the same pid files as configured in /etc/arc.conf
   # file { '/etc/logrotate.d/nordugrid-arc-arex':
   #   ensure  => $ensure,
@@ -92,43 +93,5 @@ class arc6::config(
   #   require => Package['nordugrid-arc-compute-element']
   # }
 
-  #TODO :
-
-  # plugin to set a default runtime environment
-  # file { '/usr/local/bin/default_rte_plugin.py':
-  #   ensure => present,
-  #   source => "puppet:///modules/${module_name}/default_rte_plugin.py",
-  #   mode   => '0755',
-  # }
-  #
-  # # set up runtime environments
-  # if $setup_RTEs {
-  #   class {'arc_ce::runtime_env':}
-  # }
-  #
-  # # apply manual fixes
-  # # for details check fixes.md
-  # if $apply_fixes {
-  #   file { '/usr/share/arc/submit-condor-job':
-  #     source => "puppet:///modules/${module_name}/fixes/submit-condor-job.ARC.$apply_fixes",
-  #     backup => true,
-  #   }
-  #
-  #   file { '/usr/share/arc/Condor.pm':
-  #     source => "puppet:///modules/${module_name}/fixes/Condor.pm.ARC.$apply_fixes",
-  #     backup => true,
-  #   }
-  #
-  #   file { '/usr/share/arc/glue-generator.pl':
-  #     source => "puppet:///modules/${module_name}/fixes/glue-generator.pl.ARC.$apply_fixes",
-  #     backup => true,
-  #     mode   => '0755',
-  #     notify  => Exec['create-bdii-config'],
-  #   }
-  #   exec {'create-bdii-config':
-  #     command => "/usr/share/arc/create-bdii-config",
-  #     refreshonly => true,
-  #   }
-  # }
 
 }
