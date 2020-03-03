@@ -1,0 +1,150 @@
+[common]
+hostname=<%= scope['arc6::arc_hostname'] %>
+x509_host_key=/etc/grid-security/hostkey.pem
+x509_host_cert=/etc/grid-security/hostcert.pem
+x509_cert_dir=/etc/grid-security/certificates
+
+[authgroup:lcas]
+plugin=<%= scope['arc6::lcas_timeout_sec'] %> /usr/libexec/arc/arc-lcas %D %P liblcas.so /usr/lib64 /etc/lcas/lcas.db
+
+[authgroup:gridmapusers]
+file=/etc/grid-security/grid-mapfile
+
+[mapping]
+map_with_plugin=lcas <%= scope['arc6::lcmaps_timeout_sec'] %> /usr/libexec/arc/arc-lcmaps %D %P liblcmaps.so /usr/lib64 /etc/lcmaps/lcmaps.db voms
+#no fallback to nobody:nobody
+#map_to_user=users nobody:nobody
+
+[lrms]
+lrms=<%= scope['arc6::lrms'] + (scope['arc6::lrms_default_queue'] ? " " + scope['arc6::lrms_default_queue'] : "") %>
+defaultmemory=<%= scope['arc6::lrms_defaultmemory'] %>
+<% scope['arc6::lrms_extra_conf'].each do |k, v | -%>
+<%= k %>=<%= v %>
+<% end -%>
+
+[arex]
+controldir=<%= scope['arc6::controldir'] %>
+<% scope['arc6::sessiondir'].each do | sdir | -%>
+sessiondir=<%= sdir %>
+<% end -%>
+defaultttl=<%= scope['arc6::arex_default_ttl'] %>
+loglevel=<%= scope['arc6::arex_loglevel'] %>
+shared_filesystem=<%= scope['arc6::shared_filesystem'] %>
+#uncomment to disable joblog
+#joblog=""
+<% scope['arc6::arex_extra_conf'].each do |k, v | -%>
+<%= k %>=<%= v %>
+<% end -%>
+<% if scope['arc6::apel_accounting'] -%>
+#call an arc plugin that creates apel compatible logs
+statecallout=FINISHED timeout=<%= scope['arc6::apel_accounting_plugin_timeout_s'] %>,onfailure=log <%= scope['arc6::blahp_use_wrapper'] ? '/usr/local/sbin/arc-blahp-wrapper.sh' : '/usr/libexec/arc/arc-blahp-logger' %>  -c <%= @ce_id %> -I %I  -U %u -L %C/job.%I.local -P %C/job.%I.proxy -p <%= scope['arc6::apel_accounting_dir']+'/'+ scope['arc6::apel_accounting_prefix'] %>
+<% end -%>
+
+[arex/data-staging]
+globus_tcp_port_range=<%= scope['arc6::services_ports']['tcp']['globus_tcp_port_range'].gsub('-',',') %>
+globus_udp_port_range=<%= scope['arc6::services_ports']['udp']['globus_udp_port_range'].gsub('-',',') %>
+
+[arex/ws]
+wsurl=https://<%= scope['arc6::arc_hostname']%>:<%= scope['arc6::services_ports']['tcp']['ws'] %>/arex
+<% scope['arc6::arex_ws_extra_conf'].each do |k, v | -%>
+<%= k %>=<%= v %>
+<% end -%>
+
+[arex/ws/jobs]
+allownew=<%= scope['arc6::allownew'] %>
+<% scope['arc6::arex_ws_jobs_extra_conf'].each do |k, v | -%>
+<%= k %>=<%= v %>
+<% end -%>
+
+[arex/jura]
+<% scope['arc6::arex_jura_extra_conf'].each do |k, v | -%>
+<%= k %>=<%= v %>
+<% end -%>
+
+[arex/jura/archiving]
+archivedir=<%= scope['arc6::archivedir'] %>
+<% scope['arc6::arex_jura_archiving_extra_conf'].each do |k, v | -%>
+<%= k %>=<%= v %>
+<% end -%>
+
+<% if scope['arc6::jura_accounting'] -%>
+  <%- scope['arc6::jura_targets'].each do |target, conf | -%>
+[arex/jura/<%= target %>]
+  <%- conf.each do | k, v| -%>
+<%= k %>=<%= v %>
+    <%- end -%>
+  <%- end -%>
+<% end -%>
+
+[gridftpd]
+maxconnections=<%= scope['arc6::gridftpd_maxconnections'] %>
+globus_tcp_port_range=<%= scope['arc6::services_ports']['tcp']['globus_tcp_port_range'].gsub('-',',') %>
+globus_udp_port_range=<%= scope['arc6::services_ports']['udp']['globus_udp_port_range'].gsub('-',',') %>
+<% scope['arc6::gridftpd_extra_conf'].each do |k, v | -%>
+<%= k %>=<%= v %>
+<% end -%>
+
+[gridftpd/jobs]
+allownew=<%= scope['arc6::allownew'] %>
+<% scope['arc6::gridftpd_denyaccess'].each do | someone | -%>
+denyaccess=<%= someone %>
+<% end -%>
+<% scope['arc6::gridftpd_allowaccess'].each do | someone | -%>
+allowaccess=<%= someone %>
+<% end -%>
+<% scope['arc6::gridftpd_jobs_extra_conf'].each do |k, v | -%>
+<%= k %>=<%= v %>
+<% end -%>
+
+[infosys]
+<% scope['arc6::infosys_extra_conf'].each do |k, v | -%>
+<% if v -%>
+<%= k %>=<%= v %>
+<% end -%>
+<% end -%>
+
+[infosys/ldap]
+<% scope['arc6::infosys_ldap_extra_conf'].each do |k, v | -%>
+<% if v -%>
+<%= k %>=<%= v %>
+<% end -%>
+<% end -%>
+
+[infosys/nordugrid]
+
+[infosys/glue1]
+glue_site_web=<%= scope['arc6::glue_site_web'] %>
+<% scope['arc6::infosys_glue1_extra_conf'].each do |k, v | -%>
+<% if v -%>
+<%= k %>=<%= v %>
+<% end -%>
+<% end -%>
+
+[infosys/glue2]
+admindomain_name=<%= scope['arc6::gocdb_sitename'] %>
+<% scope['arc6::infosys_glue2_extra_conf'].each do |k, v | -%>
+<% if v -%>
+<%= k %>=<%= v %>
+<% end -%>
+<% end -%>
+
+[infosys/cluster]
+homogeneity=<%= scope['arc6::cluster_homogeneity'] %>
+nodememory=<%= scope['arc6::cluster_nodememory'] %>
+<% scope['arc6::cluster_nodeaccess'].each do | val | -%>
+nodeaccess=<%= val %>
+<% end -%>
+<% scope['arc6::cluster_opsys'].each do | val | -%>
+opsys=<%= val %>
+<% end -%>
+<% scope['arc6::benchmark_results'].each do |val| -%>
+benchmark=<%= val %>
+<% end -%>
+<%scope['arc6::advertised_vos'].each do |val| -%>
+advertisedvo=<%= val %>
+<% end -%>
+
+<% scope['arc6::infosys_cluster_extra_conf'].each do |k, v | -%>
+<%= k %>=<%= v %>
+<% end -%>
+

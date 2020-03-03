@@ -1,0 +1,58 @@
+{
+  "name": "fschaer-arc6",
+  "version": "0.1.0",
+  "author": "Frederic Schaer",
+  "summary": "",
+  "license": "Apache-2.0",
+  "source": "",
+  "dependencies": [
+
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.10.0 < 7.0.0"
+    },
+    {
+      "name": "stahnma-epel"
+    },
+    {
+      "name": "puppet-fetchcrl"
+    },
+    {
+      "name": "lcgdm-voms"
+    },
+    {
+      "name": "puppetlabs-firewall"
+    }
+  ],
+  "pdk-version": "1.9.0",
+  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
+  "template-ref": "1.9.0-0-g7281db5"
+}

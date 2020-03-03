@@ -1,0 +1,62 @@
+#! /bin/sh
+#
+# this file was copied from the apel RPM, and modified to refine the constraints and time scales
+#
+# GlobalJobId as used by apel originaly gives something like "my_host_fqdn#3.0#1551113124"
+#   which is not compatible with the blah ID : 3.my_host_fqdn on ARC, so change this to use ClusterID dot ScheddName
+#   (this script runs on a SCHEDD)
+# Also, the original script recreated a whole history per 60+ days, and repbulished everything... leading in an unbelievable
+#   number of duplicate insertions : now : only create histories per days, for a number of predefined days.
+#
+# To further limit insert duplicates: only look at records that ended until yesterday - don't process anything for today
+#
+# This way, already processed jobs will not be reprocessed as apel ignores already processed (unchanged) files.
+# Final modification : pipe output into gawk, and print each job into a file named after its end date :
+#   all jobs finished on 2018-01-27 will be written to a predictable file name of ... accounting.20180127
+#
+#GOAL : find and republish all jobs started since a predefined number of days
+#the variable can be overridden using the env var NDAYS:
+CONDOR_LOCATION=/usr
+OUTPUT_LOCATION=<%= @batch_dir %>
+N_DAYS=${NDAYS:-7}
+
+#find today's epoch at 00:00:
+SINCE=`date +%s -d "now - $N_DAYS days 0:00"`
+TODAY=`date +%s -d "now 0:00"`
+
+# Find all the history files modified in the last N_DAYS
+# (there can be more than one, if the CE submits to several schedds)
+HISTORY_FILES=$(find /var/lib/condor/spool/ -name history\* -mtime -$N_DAYS)
+
+# Build the filter for the history command.
+# Ignore jobs for today.
+# Include both Completed jobs (4) and Removed (3) ones
+# Only include jobs that have started before they were removed/deleted/completed. This will include syste_periodic-removed jobs
+CONSTR="(JobStatus==4 || JobStatus==3 )&&(JobStartDate>0)&&(EnteredCurrentStatus>$SINCE)&&(EnteredCurrentStatus<$TODAY)"
+
+HOSTNAME=`hostname -f`
+
+# Cleanup before running
+/bin/find $OUTPUT_LOCATION -name accounting.\* -exec /bin/rm {} \;
+
+# Populate the accounting files
+# note : the ending pipe ("|") was removed from the RequestCpus line to accomodate with apel 1.8.1
+# see : https://github.com/apel/apel/issues/210
+for HF in $HISTORY_FILES
+do
+  $CONDOR_LOCATION/bin/condor_history -file $HF -constraint "$CONSTR" \
+    -format "%s.${HOSTNAME}|" ClusterId \
+    -format "%s|" Owner \
+    -format "%d|" RemoteWallClockTime \
+    -format "%d|" RemoteUserCpu \
+    -format "%d|" RemoteSysCpu \
+    -format "%d|" JobStartDate \
+    -format "%d|" EnteredCurrentStatus \
+    -format "%d|" ResidentSetSize_RAW \
+    -format "%d|" ImageSize_RAW \
+    -format "%d" RequestCpus \
+    -format "\n" EMPTY | gawk -v outputdir=$OUTPUT_LOCATION -F '|' '{filename=strftime("accounting.%Y%m%d",$7) ; output=outputdir "/" filename ; print $0 >> output}'
+done
+
+# Invoke the apel parser
+/usr/bin/apelparser --config <%= @config_file %>

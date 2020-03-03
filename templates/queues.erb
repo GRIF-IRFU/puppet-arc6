@@ -1,0 +1,23 @@
+<% Hash(scope['arc6::queues']).each_pair do |queue_name, queue_data| %>
+
+[queue:<%= queue_name -%>]
+<% if queue_data['allowaccess'] -%>
+<% Array(queue_data['allowaccess']).each do | someone | %>
+allowaccess=<%= someone %>
+<% end -%>
+<% end -%>
+<% if queue_data['denyaccess'] -%>
+<% Array(queue_data['denyaccess']).each do | someone | %>
+denyaccess=<%= someone %>
+<% end -%>
+<% end -%>
+<% if queue_data['advertisedvo'] -%>
+<% Array(queue_data['advertisedvo']).each do | someone | %>
+advertisedvo=<%= someone %>
+<% end -%>
+<% end -%>
+<% queue_data.reject {|k, v| k.to_s.match(/allowaccess|denyaccess|advertisedvo/)}.each do | k, v | -%>
+<%= k %>=<%= v %>
+<% end -%>
+
+<% end -%>

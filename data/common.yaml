@@ -1,0 +1,59 @@
+---
+#as long as arc6 is alpha or beta, enable testing repo
+arc6::repo_enable_testing: false
+arc6::repo_configure: true
+arc6::rpm_gpg_url: http://download.nordugrid.org/RPM-GPG-KEY-nordugrid-6
+
+#apel/umd repositories
+arc6::apel::repos:base_url: http://repository.egi.eu/sw/production/um
+arc6::apel::repos:gpg_url: http://repository.egi.eu/sw/production/umd/UMD-RPM-PGP-KEY
+arc6::apel::repos:gpg_check: true
+arc6::apel::repos:umd_release: 4
+
+#packages:
+# nordugrid-arc-arex 6.0.0-0.a3.el7 for now
+arc6::arc_ensure: latest
+arc6::packages_arc:
+  - nordugrid-arc
+  - nordugrid-arc-arex
+  - nordugrid-arc-nordugridmap
+  - nordugrid-arc-infosys-ldap
+  - nordugrid-arc-gridftpd
+  - nordugrid-arc-plugins-globus
+  - nordugrid-arc-plugins-lcas-lcmaps
+
+arc6::packages_lcas:
+  - lcas
+  - lcas-plugins-basic
+  - lcas-plugins-voms
+arc6::packages_lcmaps:
+  - lcmaps
+  - lcmaps-plugins-basic
+  - lcmaps-plugins-c-pep
+  - lcmaps-plugins-voms
+  - lcmaps-plugins-verify-proxy
+
+arc6::firewall_manage: true
+arc6::firewall_prefix: 200
+arc6::services_ports:
+  tcp:
+    ldap: 2135
+    ws: 8443
+    gsiftp: 2811
+    globus_tcp_port_range: '20000-25000'
+  udp:
+    globus_udp_port_range: '20000-25000'
+
+arc6::default_RTEs:
+  ENV/PROXY:
+    is_default: true
+    params:
+      COPY_CACERT_DIR:
+        #beware : hiera interprets no/No as boolean
+        value: 'No'
+  # for atlas support
+  APPS/HEP/ATLAS-SITE-LCG:
+    dummy: true
+  # for cms and cms sam tests support
+  ENV/GLITE:
+    dummy: true
