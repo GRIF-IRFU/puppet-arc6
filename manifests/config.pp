@@ -72,26 +72,4 @@ class arc6::config(
     include ::arc6::apel
   }
 
-  #TODO ?
-  #
-  # Added to use the same pid files as configured in /etc/arc.conf
-  # file { '/etc/logrotate.d/nordugrid-arc-arex':
-  #   ensure  => $ensure,
-  #   owner   => 'root',
-  #   group   => 'root',
-  #   mode    => '0644',
-  #   content => template("${module_name}/nordugrid-arc-arex.erb"),
-  #   require => Package['nordugrid-arc-compute-element'],
-  # }
-  #
-  # file { '/etc/logrotate.d/nordugrid-arc-gridftpd':
-  #   ensure  => $ensure,
-  #   owner   => 'root',
-  #   group   => 'root',
-  #   mode    => '0644',
-  #   content => template("${module_name}/nordugrid-arc-gridftpd.erb"),
-  #   require => Package['nordugrid-arc-compute-element']
-  # }
-
-
 }
