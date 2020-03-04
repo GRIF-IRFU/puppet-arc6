@@ -1,0 +1,11 @@
+#These are just hiera examples for this module !
+arc6::resource_location: 'Saclay, FR'
+arc6::resource_latitude : 48.721545
+arc6::resource_longitude: 2.148684
+arc6::queues:
+  default:
+    defaultmemory: '2048'
+    condor_requirements: '(IfThenElse(RequestCpus =!= undefined , (RequestCpus == 1), True))'
+  mcore:
+    defaultmemory: '5120'
+    condor_requirements: '(IfThenElse(RequestCpus =!= undefined , (RequestCpus == 8 || RequestCpus == 1), True))'
