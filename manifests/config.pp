@@ -24,7 +24,7 @@ class arc6::config(
 
   #create directories
   # make sure that args are not undef
-  [ $arc6::arc_basepath, $arc6::controldir, $arc6::sessiondir, $arc6::archivedir , $arc6::apel_accounting_dir ].filter | $d | {
+  [ $arc6::arc_basepath, $arc6::controldir, $arc6::sessiondir , $arc6::apel_accounting_dir ].filter | $d | {
     $d and $d != []
   }.each | $dir | {
      file { $dir : ensure => directory }

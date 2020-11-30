@@ -10,6 +10,9 @@ arc6::apel::repos:gpg_url: http://repository.egi.eu/sw/production/umd/UMD-RPM-PG
 arc6::apel::repos:gpg_check: true
 arc6::apel::repos:umd_release: 4
 
+#ARGUS
+arc6::argus_resourceid: http://authz-interop.org/xacml/resource/resource-type/arc
+
 #packages:
 # nordugrid-arc-arex 6.0.0-0.a3.el7 for now
 arc6::arc_ensure: latest

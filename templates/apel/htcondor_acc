@@ -26,7 +26,7 @@ TODAY=`date +%s -d "now 0:00"`
 
 # Find all the history files modified in the last N_DAYS
 # (there can be more than one, if the CE submits to several schedds)
-HISTORY_FILES=$(find /var/lib/condor/spool/ -name history\* -mtime -$N_DAYS)
+HISTORY_FILES=$(find /var/lib/condor/spool/ -maxdepth 1 -name history\* -mtime -$N_DAYS -type f)
 
 # Build the filter for the history command.
 # Ignore jobs for today.

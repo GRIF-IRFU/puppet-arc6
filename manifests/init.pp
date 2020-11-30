@@ -13,6 +13,7 @@ class arc6(
 
   #authentication/authorization vars
   Optional[Array[String]] $argus_servers = undef,
+  String                  $argus_resourceid, # the ARGUS "resource-id sent by lcmaps to argus when doing requests
 
   #The CE mean hepspec (HS06), for instance : 13.12
   Float   $ce_hepspec,
@@ -43,7 +44,6 @@ class arc6(
   Array[String] $sessiondir = [ "$arc_basepath/sessiondir" ],
   #keep default RTE dir, will prevent having to enable extra ones
   #$runtimedir = [ "$arc_basepath/extraruntimes" ],
-  String $archivedir = "$arc_basepath/jura/archive",
 
   #ARC vars
   String $arc_hostname = $::fqdn,
@@ -135,7 +135,6 @@ class arc6(
   Hash $arex_ws_extra_conf = {},
   Hash $arex_ws_jobs_extra_conf = {},
   Hash $arex_jura_extra_conf = {},
-  Hash $arex_jura_archiving_extra_conf = {},
   Hash $gridftpd_extra_conf = {},
   Hash $gridftpd_jobs_extra_conf = {},
   Hash $infosys_extra_conf = {},

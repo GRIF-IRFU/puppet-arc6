@@ -10,7 +10,7 @@ pepc = "lcmaps_c_pep.mod"
             <%- Array(scope['arc6::argus_servers']).each do |s| -%>
             "--pep-daemon-endpoint-url https://<%= s %>:8154/authz"
             <%- end -%>
-            "--resourceid http://authz-interop.org/xacml/resource/resource-type/arc"
+            "--resourceid <%= scope['arc6::argus_resourceid'] %>"
             "--actionid http://glite.org/xacml/action/execute"
             "--capath /etc/grid-security/certificates/"
             "--certificate /etc/grid-security/hostcert.pem"

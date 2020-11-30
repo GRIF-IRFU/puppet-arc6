@@ -61,12 +61,6 @@ allownew=<%= scope['arc6::allownew'] %>
 <%= k %>=<%= v %>
 <% end -%>
 
-[arex/jura/archiving]
-archivedir=<%= scope['arc6::archivedir'] %>
-<% scope['arc6::arex_jura_archiving_extra_conf'].each do |k, v | -%>
-<%= k %>=<%= v %>
-<% end -%>
-
 <% if scope['arc6::jura_accounting'] -%>
   <%- scope['arc6::jura_targets'].each do |target, conf | -%>
 [arex/jura/<%= target %>]
