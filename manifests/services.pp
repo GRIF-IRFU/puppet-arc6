@@ -1,5 +1,5 @@
 class arc6::services(
-  $services = ['arc-gridftpd', 'arc-arex' , 'arc-infosys-ldap']
+  $services = ['arc-gridftpd', 'arc-arex' , 'arc-infosys-ldap', 'arc-arex-ws']
 ) {
 
   $services.each | $svc | {
